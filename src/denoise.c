@@ -212,7 +212,6 @@ void interp_band_gain(DenoiseState *st, float *g, const float *bandE) {
 static void check_init(DenoiseState *st) {
   int i;
   if (st->init) return;
-  /* FIXME: Deallocate this! */
   st->kfft = opus_fft_alloc_twiddles(2*FRAME_SIZE, NULL, NULL, NULL, 0);
 
   /* Get the sample rate set up */
@@ -335,7 +334,7 @@ DenoiseState *rnnoise_create(RNNModel *model) {
 
 void rnnoise_destroy(DenoiseState *st) {
   if (st->init)
-    free(st->kfft);
+    opus_fft_free(st->kfft, 0);
   free(st->rnn.vad_gru_state);
   free(st->rnn.noise_gru_state);
   free(st->rnn.denoise_gru_state);
